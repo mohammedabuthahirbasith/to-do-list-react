@@ -1,29 +1,44 @@
 import Content from "./Content";
 import Header from "./Header";
 import Footer from "./Footer";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddItem from "./AddItem";
 import SearchItem from "./SearchItem";
 
 function App() {
-  const [items, setItems] = useState(JSON.parse(localStorage.getItem("todo_list")));
-
+    const API_URL = 'http://localhost:3500/items';
+    const [items, setItems] = useState([]);
     const [newItem, setNewItem] = useState('')
     const [search, setSearch] = useState('')
+    const [fetchError, setFetchError] = useState(null);
+
+    useEffect(() => {
+      const fetchItems = async () => {
+        try{
+          const response = await fetch(API_URL);
+          if(!response.ok) throw Error("data not received")
+          const listItems = await response.json();
+          console.log(listItems)
+          setItems(listItems);
+      }catch (err){
+        setFetchError(err.message);
+      }
+     }
+
+     (async () => await fetchItems())()
+    }, [])
 
     const addItem = (item) => {
       const id = items.length ? items[items.length-1].id + 1 : 1;  
       const addNewItem = {id, checked:false, item}
       const listItems = [...items, addNewItem]
       setItems(listItems)
-      localStorage.setItem("todo_list", JSON.stringify(listItems))
     }
 
     const handleCheck = (id) => {
       const listItems = items.map((item) => 
       item.id===id ? {...item, checked:!item.checked} : item)
       setItems(listItems)
-      localStorage.setItem("todo_list", JSON.stringify(listItems))
     }
 
     const onDelete = (id) => {
@@ -34,7 +49,6 @@ function App() {
 
     const handleSubmit = (e) => {
       e.preventDefault();
-      console.log('submitted');
       if(!newItem) return;
       console.log(newItem);
       addItem(newItem)

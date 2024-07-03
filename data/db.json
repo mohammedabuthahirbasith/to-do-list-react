@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "checked": false,
+      "item": "Visit basith.in"
+    },
+
+    {
+      "id": 2,
+      "checked": true,
+      "item": "React"
+    },
+
+    {
+      "id": 3,
+      "checked": false,
+      "item": "Angular"
+    }
+
+  ]
+}
